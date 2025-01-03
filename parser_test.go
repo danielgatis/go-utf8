@@ -3,8 +3,6 @@ package utf8
 import (
 	"os"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 var _ Performer = (*performer)(nil)
@@ -35,5 +33,7 @@ func TestParser(t *testing.T) {
 		parser.Advance(b)
 	}
 
-	assert.Equal(t, string(data), performer.output)
+	if string(data) != performer.output {
+		t.Errorf("expected %s but got %s", string(data), performer.output)
+	}
 }

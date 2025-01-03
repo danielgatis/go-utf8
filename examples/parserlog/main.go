@@ -1,9 +1,7 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"io"
 	"os"
 
 	"github.com/danielgatis/go-utf8"
@@ -16,30 +14,27 @@ type performer struct {
 }
 
 func (p *performer) CodePoint(r rune) {
-	fmt.Println(string(r))
+	p.output += string(r)
 }
 
 func (p *performer) InvalidSequece() {
-	fmt.Println("�")
+	p.output += "�"
 }
 
 func main() {
 	performer := &performer{}
 	parser := utf8.New(performer)
 
-	reader := bufio.NewReader(os.Stdin)
+	data, err := os.ReadFile("./fixtures/UTF-8-demo.txt")
 
-	for {
-		b, err := reader.ReadByte()
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		os.Exit(1)
+	}
 
-		if err != nil {
-			if err == io.EOF {
-				break
-			}
-
-			panic(err)
-		}
-
+	for _, b := range data {
 		parser.Advance(b)
 	}
+
+	fmt.Println(performer.output)
 }
